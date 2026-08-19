@@ -1,4 +1,6 @@
 using api.Data;
+using api.Interfaces;
+using api.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
@@ -15,6 +18,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
         builder.Configuration.GetConnectionString("DefaultStringConnection")
         );
 });
+
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 
 var app = builder.Build();
 
@@ -26,5 +33,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
