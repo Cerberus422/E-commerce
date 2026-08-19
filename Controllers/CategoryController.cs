@@ -30,8 +30,13 @@ public class CategoryController : ControllerBase
     {
         var category = await _categoryRepo.GetByIdAsync(Id);
 
+        if (category == null)
+        {
+            return NotFound();
+        }
+        
         var categoryDto = category.ToCategoryDto();
-
+        
         return Ok(categoryDto);
     }
 
@@ -43,5 +48,32 @@ public class CategoryController : ControllerBase
         await _categoryRepo.CreateAsync(categoryModel);
 
         return CreatedAtAction(nameof(GetById), new { Id = categoryModel.Id }, categoryModel.ToCategoryDto());
+    }
+    
+    [HttpPut("{Id}")]
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto, int Id) // Updating Category 
+    {
+        
+        var category = await _categoryRepo.UpdateAsync(Id, updateCategoryDto.ToCategoryFromUpdate());
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(category.ToCategoryDto());
+    }
+    
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int Id) // deleting Category
+    {
+        var categories = await _categoryRepo.DeleteAsync(Id);
+
+        if (categories == null)
+        {
+            return NotFound("Category does not exist");
+        }
+
+        return NoContent();
     }
 }
