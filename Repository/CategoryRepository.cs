@@ -19,8 +19,16 @@ public class CategoryRepository : ICategoryRepository
         return await _context.Categories.ToListAsync();
     }
 
-    public async Task<List<Category>> CreateAsync()
+    public async Task<Category> GetByIdAsync(int categoryId)
     {
-        throw new NotImplementedException();
+        return await _context.Categories.FindAsync(categoryId);
+    }
+
+    public async Task<Category> CreateAsync(Category categoryModel)
+    {
+        await _context.Categories.AddAsync(categoryModel);
+        await _context.SaveChangesAsync();
+
+        return categoryModel;
     }
 }

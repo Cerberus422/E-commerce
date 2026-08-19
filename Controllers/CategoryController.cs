@@ -1,4 +1,5 @@
-﻿using api.Interfaces;
+﻿using api.Dtos.Category;
+using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +16,32 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll() // Showing all Categories
     {
         var categories = await _categoryRepo.GetAllAsync();
 
         var categoryDto = categories.Select(c => c.ToCategoryDto());
 
         return Ok(categoryDto);
+    }
+    
+    [HttpGet("{Id}")]
+    public async Task<IActionResult> GetById([FromRoute] int Id) // Showing Category by Id
+    {
+        var category = await _categoryRepo.GetByIdAsync(Id);
+
+        var categoryDto = category.ToCategoryDto();
+
+        return Ok(categoryDto);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto) // Creating Category 
+    {
+        var categoryModel = categoryDto.ToCategoryFromCreate();
+    
+        await _categoryRepo.CreateAsync(categoryModel);
+
+        return CreatedAtAction(nameof(GetById), new { Id = categoryModel.Id }, categoryModel.ToCategoryDto());
     }
 }

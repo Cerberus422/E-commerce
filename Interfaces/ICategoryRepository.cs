@@ -5,5 +5,6 @@ namespace api.Interfaces;
 public interface ICategoryRepository
 {
     Task<List<Category>> GetAllAsync(); // showing all Categories
-    Task<List<Category>> CreateAsync(); // creating Category
+    Task<Category> GetByIdAsync(int categoryId); // showing Category by Id
+    Task<Category> CreateAsync(Category categoryModel); // creating Category
 }

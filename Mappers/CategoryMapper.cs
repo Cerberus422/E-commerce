@@ -9,6 +9,15 @@ public static class CategoryMapper
     {
         return new CategoryDto
         {
+            Id = categoryModel.Id,
+            Name = categoryModel.Name
+        };
+    }
+    
+    public static Category ToCategoryFromCreate(this CreateCategoryDto categoryModel)
+    {
+        return new Category
+        {
             Name = categoryModel.Name
         };
     }
