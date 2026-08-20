@@ -21,7 +21,7 @@ namespace api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DefaultNamespace.Category", b =>
+            modelBuilder.Entity("api.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,7 +38,7 @@ namespace api.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("DefaultNamespace.Product", b =>
+            modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,15 +70,20 @@ namespace api.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("DefaultNamespace.Product", b =>
+            modelBuilder.Entity("api.Models.Product", b =>
                 {
-                    b.HasOne("DefaultNamespace.Category", "Category")
-                        .WithMany()
+                    b.HasOne("api.Models.Category", "Category")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("api.Models.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
