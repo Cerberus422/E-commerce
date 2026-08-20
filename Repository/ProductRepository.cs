@@ -17,6 +17,15 @@ public class ProductRepository : IProductRepository
 
     public async Task<List<Product>> GetAllAsync()
     {
-       return await _context.Products.Include(p => p.Category).ToListAsync();
+       return await _context.Products
+           .Include(p => p.Category)
+           .ToListAsync();
+    }
+
+    public async Task<Product?> GetById(int productId)
+    {
+        return await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == productId);
     }
 }

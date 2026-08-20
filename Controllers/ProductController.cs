@@ -23,4 +23,19 @@ public class ProductController : ControllerBase
 
         return Ok(productModel);
     }
+    
+    [HttpGet("{productId}")]
+    public async Task<IActionResult> GetById([FromRoute] int productId) // Showing Products By Id
+    {
+        var products =  await _productRepo.GetById(productId);
+
+        if (products == null)
+        {
+            return NotFound();
+        }
+        
+        var productModel = products.ToProductDto();
+
+        return Ok(productModel);
+    }
 }
