@@ -22,10 +22,17 @@ public class ProductRepository : IProductRepository
            .ToListAsync();
     }
 
-    public async Task<Product?> GetById(int productId)
+    public async Task<Product?> GetByIdAsync(int productId)
     {
         return await _context.Products
             .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == productId);
+    }
+
+    public async Task<List<Product>> GetProductsByCategoryIdAsync(int categoryId)
+    {
+        return await _context.Products
+            .Include(p => p.Category)
+            .Where(p => p.CategoryId == categoryId).ToListAsync();
     }
 }

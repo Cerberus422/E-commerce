@@ -25,17 +25,33 @@ public class ProductController : ControllerBase
     }
     
     [HttpGet("{productId}")]
-    public async Task<IActionResult> GetById([FromRoute] int productId) // Showing Products By Id
+    public async Task<IActionResult> GetById([FromRoute] int productId) // Showing Product By Id
     {
-        var products =  await _productRepo.GetById(productId);
+        var product =  await _productRepo.GetByIdAsync(productId);
 
-        if (products == null)
+        if (product == null)
         {
             return NotFound();
         }
         
-        var productModel = products.ToProductDto();
+        var productModel = product.ToProductDto();
 
         return Ok(productModel);
     }
+    
+    [HttpGet("category/{categoryId}")]
+    public async Task<IActionResult> GetProductsByCategoryId([FromRoute] int categoryId) // Showing Products By CategoryId
+    {
+        var products =  await _productRepo.GetProductsByCategoryIdAsync(categoryId);
+
+        if (!products.Any())
+        {
+            return NotFound();
+        }
+        
+        var productModel = products.Select(p => p.ToProductDto()).ToList();
+
+        return Ok(productModel);
+    }
+    
 }
