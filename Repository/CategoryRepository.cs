@@ -62,4 +62,9 @@ public class CategoryRepository : ICategoryRepository
 
         return categoryModel;
     }
+
+    public  Task<bool> CategoryExists(int id)
+    {
+        return  _context.Categories.AnyAsync(c => c.Id == id);
+    }
 }

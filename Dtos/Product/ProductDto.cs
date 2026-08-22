@@ -10,5 +10,5 @@ public class ProductDto
     public decimal Price { get; set; }
     public int Quantity { get; set; }
 
-    public CategoryDto Category { get; set; } = null!;
+    public CategoryDto Category { get; set; } = new CategoryDto();
 }

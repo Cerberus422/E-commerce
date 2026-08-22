@@ -35,4 +35,46 @@ public class ProductRepository : IProductRepository
             .Include(p => p.Category)
             .Where(p => p.CategoryId == categoryId).ToListAsync();
     }
+
+    public async Task<Product> CreateAsync(Product productModel)
+    {
+        await _context.Products.AddAsync(productModel);
+        await _context.SaveChangesAsync();
+
+        return productModel;
+    }
+
+    public async Task<Product?> UpdateAsync(int id, Product updateDto)
+    {
+        var existingProduct = await _context.Products.FindAsync(id);
+
+        if (existingProduct == null)
+            return null;
+
+        existingProduct.Name = updateDto.Name;
+        existingProduct.Description = updateDto.Description;
+        existingProduct.Price = updateDto.Price;
+        existingProduct.Quantity = updateDto.Quantity;
+        existingProduct.CategoryId = updateDto.CategoryId;
+        
+        await _context.SaveChangesAsync();
+
+        return await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+    }
+
+    public async Task<Product?> DeleteAsync(int id)
+    {
+        var existingProduct = await _context.Products.FindAsync(id);
+
+        if (existingProduct == null)
+            return null;
+
+        _context.Products.Remove(existingProduct);
+        await _context.SaveChangesAsync();
+
+        return existingProduct;
+    }
 }

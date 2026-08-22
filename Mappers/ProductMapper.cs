@@ -19,4 +19,29 @@ public static class ProductMapper
             Category = productModel.Category.ToCategoryDto()
         };
     }
+
+    public static Product ToProductFromCreate(this CreateProductDto productDto, int Id)
+    {
+        return new Product
+        {
+            Name = productDto.Name,
+            Description = productDto.Description,
+            Price = productDto.Price,
+            Quantity = productDto.Quantity,
+            
+            CategoryId = Id
+        };
+    }
+    
+    public static Product ToProductFromUpdate(this UpdateProductDto productModel)
+    {
+        return new Product
+        {
+            Name = productModel.Name,
+            Description = productModel.Description,
+            Price = productModel.Price,
+            Quantity = productModel.Quantity,
+            CategoryId = productModel.CategoryId
+        };
+    }
 }

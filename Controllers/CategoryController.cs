@@ -25,7 +25,7 @@ public class CategoryController : ControllerBase
         return Ok(categoryDto);
     }
     
-    [HttpGet("{Id}")]
+    [HttpGet("{Id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int Id) // Showing Category by Id
     {
         var category = await _categoryRepo.GetByIdAsync(Id);
@@ -50,8 +50,8 @@ public class CategoryController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { Id = categoryModel.Id }, categoryModel.ToCategoryDto());
     }
     
-    [HttpPut("{Id}")]
-    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto, int Id) // Updating Category 
+    [HttpPut("{Id:int}")]
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto,[FromRoute] int Id) // Updating Category 
     {
         
         var category = await _categoryRepo.UpdateAsync(Id, updateCategoryDto.ToCategoryFromUpdate());
@@ -64,8 +64,8 @@ public class CategoryController : ControllerBase
         return Ok(category.ToCategoryDto());
     }
     
-    [HttpDelete]
-    public async Task<IActionResult> Delete(int Id) // deleting Category
+    [HttpDelete("{Id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int Id) // deleting Category
     {
         var categories = await _categoryRepo.DeleteAsync(Id);
 
