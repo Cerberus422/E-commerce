@@ -49,7 +49,7 @@ public class ProductController : ControllerBase
 
         if (!products.Any())
         {
-            return NotFound();
+            return NotFound("Nothing in here yet");
         }
         
         var productModel = products.Select(p => p.ToProductDto()).ToList();
@@ -93,9 +93,8 @@ public class ProductController : ControllerBase
             return NotFound();
         }
 
-        var updatedProduct = await _productRepo.GetByIdAsync(product.Id);
+        return Ok(product.ToProductDto());
 
-        return Ok(updatedProduct!.ToProductDto());
     }
     
     [HttpDelete("{Id:int}")]
@@ -110,4 +109,24 @@ public class ProductController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPatch("{Id:int}")]
+    public async Task<IActionResult> Patch([FromRoute] int Id, [FromBody] PatchProductDto patchDto) // patching Product
+    {
+        if (patchDto.CategoryId.HasValue)
+        {
+            if (!await _categoryRepo.CategoryExists(patchDto.CategoryId.Value))
+            {
+                return BadRequest("Category does not exist");
+            }
+        }
+        
+        var product = await _productRepo.PatchAsync(Id, patchDto);
+
+        if (product == null)
+            return NotFound();
+        
+        return Ok(product.ToProductDto());
+    }
+    
 }

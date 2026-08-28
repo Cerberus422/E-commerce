@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Dtos.Product;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +47,9 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product?> UpdateAsync(int id, Product updateDto)
     {
-        var existingProduct = await _context.Products.FindAsync(id);
+        var existingProduct = await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (existingProduct == null)
             return null;
@@ -59,9 +62,8 @@ public class ProductRepository : IProductRepository
         
         await _context.SaveChangesAsync();
 
-        return await _context.Products
-            .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        return existingProduct;
+
 
     }
 
@@ -76,5 +78,35 @@ public class ProductRepository : IProductRepository
         await _context.SaveChangesAsync();
 
         return existingProduct;
+    }
+
+    public async Task<Product?> PatchAsync(int id, PatchProductDto patchDto)
+    {
+        var product = await _context.Products
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return null;
+
+        if (patchDto.Name != null)
+            product.Name = patchDto.Name;
+        
+        if (patchDto.Description != null)
+            product.Description = patchDto.Description;
+        
+        if (patchDto.Price != null)
+            product.Price = patchDto.Price.Value;
+        
+        if (patchDto.Quantity != null)
+            product.Quantity = patchDto.Quantity.Value;
+        
+        if (patchDto.CategoryId != null)
+            product.CategoryId = patchDto.CategoryId.Value;
+        
+        await _context.SaveChangesAsync();
+        
+        return await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 }

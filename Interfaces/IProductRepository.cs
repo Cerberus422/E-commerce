@@ -1,4 +1,5 @@
-﻿using api.Models;
+﻿using api.Dtos.Product;
+using api.Models;
 
 namespace api.Interfaces;
 
@@ -10,4 +11,5 @@ public interface IProductRepository
     public Task<Product> CreateAsync(Product productModel); // creating Product
     public Task<Product?> UpdateAsync(int id,Product updateDto); // updating Product
     public Task<Product?> DeleteAsync(int id); // delete Product
+    public Task<Product?> PatchAsync(int id,PatchProductDto patchDto); // patch Product
 }
