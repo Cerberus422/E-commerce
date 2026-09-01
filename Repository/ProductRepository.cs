@@ -48,8 +48,7 @@ public class ProductRepository : IProductRepository
     public async Task<Product?> UpdateAsync(int id, Product updateDto)
     {
         var existingProduct = await _context.Products
-            .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FindAsync(id);
 
         if (existingProduct == null)
             return null;
@@ -62,9 +61,10 @@ public class ProductRepository : IProductRepository
         
         await _context.SaveChangesAsync();
 
-        return existingProduct;
-
-
+        return await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        
     }
 
     public async Task<Product?> DeleteAsync(int id)
