@@ -1,5 +1,6 @@
 ﻿using api.Data;
 using api.Dtos.Product;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,24 @@ public class ProductRepository : IProductRepository
     }
 
 
-    public async Task<List<Product>> GetAllAsync()
+    public async Task<List<Product>> GetAllAsync(QueryObject query)
     {
-       return await _context.Products
+       var product =  _context.Products
            .Include(p => p.Category)
-           .ToListAsync();
+           .AsQueryable();
+
+       if (!string.IsNullOrWhiteSpace(query.Name))
+       {
+           product = product.Where(p => p.Name.Contains(query.Name));
+       }
+       
+       if (query.CategoryId.HasValue)
+       {
+           product = product.Where(p => p.CategoryId == query.CategoryId);
+       }
+
+       return await product.ToListAsync();
+
     }
 
     public async Task<Product?> GetByIdAsync(int productId)
@@ -28,13 +42,6 @@ public class ProductRepository : IProductRepository
         return await _context.Products
             .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == productId);
-    }
-
-    public async Task<List<Product>> GetProductsByCategoryIdAsync(int categoryId)
-    {
-        return await _context.Products
-            .Include(p => p.Category)
-            .Where(p => p.CategoryId == categoryId).ToListAsync();
     }
 
     public async Task<Product> CreateAsync(Product productModel)

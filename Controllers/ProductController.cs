@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Product;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,14 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() // Showing all Products
+    public async Task<IActionResult> GetAll([FromQuery] QueryObject query) // Showing all Products, with filters 
     {
-        var products =  await _productRepo.GetAllAsync();
+        var products =  await _productRepo.GetAllAsync(query);
+
+        if (!products.Any())
+        {
+            return NotFound("Nothing was found");
+        }
 
         var productModel = products.Select(p => p.ToProductDto()).ToList();
 
@@ -38,21 +44,6 @@ public class ProductController : ControllerBase
         }
         
         var productModel = product.ToProductDto();
-
-        return Ok(productModel);
-    }
-    
-    [HttpGet("category/{categoryId:int}")]
-    public async Task<IActionResult> GetProductsByCategoryId([FromRoute] int categoryId) // Showing Products By CategoryId
-    {
-        var products =  await _productRepo.GetProductsByCategoryIdAsync(categoryId);
-
-        if (!products.Any())
-        {
-            return NotFound("Nothing in here yet");
-        }
-        
-        var productModel = products.Select(p => p.ToProductDto()).ToList();
 
         return Ok(productModel);
     }
