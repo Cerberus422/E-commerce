@@ -25,12 +25,36 @@ public class ProductRepository : IProductRepository
 
        if (!string.IsNullOrWhiteSpace(query.Name))
        {
-           product = product.Where(p => p.Name.Contains(query.Name));
+           product = product
+               .Where(p => p.Name.Contains(query.Name));
        }
        
        if (query.CategoryId.HasValue)
        {
-           product = product.Where(p => p.CategoryId == query.CategoryId);
+           product = product
+               .Where(p => p.CategoryId == query.CategoryId);
+       }
+       
+       if (query.InStock == true)
+       {
+           product = product
+               .Where(p => p.Quantity > 0 );
+       }
+
+       if (!string.IsNullOrWhiteSpace(query.SortBy))
+       {
+           if(query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+           {
+               product = query.IsDescending 
+                   ? product.OrderByDescending(p => p.Name) 
+                   : product.OrderBy(p => p.Name);
+           }
+           else if (query.SortBy.Equals("Price", StringComparison.OrdinalIgnoreCase))
+           {
+               product = query.IsDescending 
+                   ? product.OrderByDescending(p => p.Price) 
+                   : product.OrderBy(p => p.Price);
+           }
        }
 
        return await product.ToListAsync();

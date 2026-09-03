@@ -19,7 +19,7 @@ public class UpdateProductDto
     public decimal Price { get; set; }
     
     [Required]
-    [Range(1,999)]
+    [Range(0,999)]
     public int Quantity { get; set; }
     
     [Required]

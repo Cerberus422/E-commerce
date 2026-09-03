@@ -20,7 +20,7 @@ public static class ProductMapper
         };
     }
 
-    public static Product ToProductFromCreate(this CreateProductDto productDto, int Id)
+    public static Product ToProductFromCreate(this CreateProductDto productDto, int categoryId)
     {
         return new Product
         {
@@ -29,7 +29,7 @@ public static class ProductMapper
             Price = productDto.Price,
             Quantity = productDto.Quantity,
             
-            CategoryId = Id
+            CategoryId = categoryId
         };
     }
     

@@ -48,15 +48,15 @@ public class ProductController : ControllerBase
         return Ok(productModel);
     }
     
-    [HttpPost("{productId:int}")]
-    public async Task<IActionResult> Create([FromRoute] int productId,[FromBody] CreateProductDto productDto) // Creating Product 
+    [HttpPost("{categoryId:int}")]
+    public async Task<IActionResult> Create([FromRoute] int categoryId,[FromBody] CreateProductDto productDto) // Creating Product 
     {
-        if (!await _categoryRepo.CategoryExists(productId))
+        if (!await _categoryRepo.CategoryExists(categoryId))
         {
             return BadRequest("Category does not exist");
         }
 
-        var productModel = productDto.ToProductFromCreate(productId);
+        var productModel = productDto.ToProductFromCreate(categoryId);
 
         await _productRepo.CreateAsync(productModel);
 

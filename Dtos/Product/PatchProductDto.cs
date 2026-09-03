@@ -15,7 +15,7 @@ public class PatchProductDto
     [Range(1,9999.99)]
     public decimal? Price { get; set; }
     
-    [Range(1,999)]
+    [Range(0,999)]
     public int? Quantity { get; set; }
     
     public int? CategoryId { get; set; }
