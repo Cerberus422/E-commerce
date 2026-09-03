@@ -48,15 +48,15 @@ public class ProductController : ControllerBase
         return Ok(productModel);
     }
     
-    [HttpPost("{Id:int}")]
-    public async Task<IActionResult> Create([FromRoute] int Id,[FromBody] CreateProductDto productDto) // Creating Product 
+    [HttpPost("{productId:int}")]
+    public async Task<IActionResult> Create([FromRoute] int productId,[FromBody] CreateProductDto productDto) // Creating Product 
     {
-        if (!await _categoryRepo.CategoryExists(Id))
+        if (!await _categoryRepo.CategoryExists(productId))
         {
             return BadRequest("Category does not exist");
         }
 
-        var productModel = productDto.ToProductFromCreate(Id);
+        var productModel = productDto.ToProductFromCreate(productId);
 
         await _productRepo.CreateAsync(productModel);
 
@@ -69,15 +69,15 @@ public class ProductController : ControllerBase
             createdProduct.ToProductDto());
     }
     
-    [HttpPut("{Id:int}")]
-    public async Task<IActionResult> Update([FromBody] UpdateProductDto updateProductDto, [FromRoute] int Id) // Updating Product 
+    [HttpPut("{productId:int}")]
+    public async Task<IActionResult> Update([FromBody] UpdateProductDto updateProductDto, [FromRoute] int productId) // Updating Product 
     {
         if (!await _categoryRepo.CategoryExists(updateProductDto.CategoryId))
         {
             return BadRequest("Category does not exist");
         }
         
-        var product = await _productRepo.UpdateAsync(Id, updateProductDto.ToProductFromUpdate());
+        var product = await _productRepo.UpdateAsync(productId, updateProductDto.ToProductFromUpdate());
 
         if (product == null)
         {
@@ -88,10 +88,10 @@ public class ProductController : ControllerBase
 
     }
     
-    [HttpDelete("{Id:int}")]
-    public async Task<IActionResult> Delete([FromRoute] int Id) // deleting Product
+    [HttpDelete("{productId:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int productId) // deleting Product
     {
-        var product = await _productRepo.DeleteAsync(Id);
+        var product = await _productRepo.DeleteAsync(productId);
 
         if (product == null)
         {
@@ -101,8 +101,8 @@ public class ProductController : ControllerBase
         return NoContent();
     }
 
-    [HttpPatch("{Id:int}")]
-    public async Task<IActionResult> Patch([FromRoute] int Id, [FromBody] PatchProductDto patchDto) // patching Product
+    [HttpPatch("{productId:int}")]
+    public async Task<IActionResult> Patch([FromRoute] int productId, [FromBody] PatchProductDto patchDto) // patching Product
     {
         if (patchDto.CategoryId.HasValue)
         {
@@ -112,7 +112,7 @@ public class ProductController : ControllerBase
             }
         }
         
-        var product = await _productRepo.PatchAsync(Id, patchDto);
+        var product = await _productRepo.PatchAsync(productId, patchDto);
 
         if (product == null)
             return NotFound();

@@ -32,9 +32,9 @@ public class CategoryRepository : ICategoryRepository
         return categoryModel;
     }
 
-    public async Task<Category?> UpdateAsync(int id, Category updateDto)
+    public async Task<Category?> UpdateAsync(int categoryId, Category updateDto)
     {
-        var existingCategory = await _context.Categories.FindAsync(id);
+        var existingCategory = await _context.Categories.FindAsync(categoryId);
 
         if (existingCategory == null)
         {
@@ -48,9 +48,9 @@ public class CategoryRepository : ICategoryRepository
         return existingCategory;
     }
 
-    public async Task<Category?> DeleteAsync(int id)
+    public async Task<Category?> DeleteAsync(int categoryId)
     {
-        var categoryModel = await _context.Categories.FindAsync(id);
+        var categoryModel = await _context.Categories.FindAsync(categoryId);
 
         if (categoryModel == null)
         {
@@ -63,8 +63,8 @@ public class CategoryRepository : ICategoryRepository
         return categoryModel;
     }
 
-    public  Task<bool> CategoryExists(int id)
+    public  Task<bool> CategoryExists(int categoryId)
     {
-        return  _context.Categories.AnyAsync(c => c.Id == id);
+        return  _context.Categories.AnyAsync(c => c.Id == categoryId);
     }
 }

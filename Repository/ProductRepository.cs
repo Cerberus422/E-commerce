@@ -52,10 +52,10 @@ public class ProductRepository : IProductRepository
         return productModel;
     }
 
-    public async Task<Product?> UpdateAsync(int id, Product updateDto)
+    public async Task<Product?> UpdateAsync(int productId, Product updateDto)
     {
         var existingProduct = await _context.Products
-            .FindAsync(id);
+            .FindAsync(productId);
 
         if (existingProduct == null)
             return null;
@@ -70,13 +70,13 @@ public class ProductRepository : IProductRepository
 
         return await _context.Products
             .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == productId);
         
     }
 
-    public async Task<Product?> DeleteAsync(int id)
+    public async Task<Product?> DeleteAsync(int productId)
     {
-        var existingProduct = await _context.Products.FindAsync(id);
+        var existingProduct = await _context.Products.FindAsync(productId);
 
         if (existingProduct == null)
             return null;
@@ -87,10 +87,10 @@ public class ProductRepository : IProductRepository
         return existingProduct;
     }
 
-    public async Task<Product?> PatchAsync(int id, PatchProductDto patchDto)
+    public async Task<Product?> PatchAsync(int productId, PatchProductDto patchDto)
     {
         var product = await _context.Products
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == productId);
 
         if (product == null)
             return null;
@@ -114,6 +114,6 @@ public class ProductRepository : IProductRepository
         
         return await _context.Products
             .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == productId);
     }
 }

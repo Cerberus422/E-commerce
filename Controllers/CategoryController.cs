@@ -25,10 +25,10 @@ public class CategoryController : ControllerBase
         return Ok(categoryDto);
     }
     
-    [HttpGet("{Id:int}")]
-    public async Task<IActionResult> GetById([FromRoute] int Id) // Showing Category by Id
+    [HttpGet("{categoryId:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int categoryId) // Showing Category by Id
     {
-        var category = await _categoryRepo.GetByIdAsync(Id);
+        var category = await _categoryRepo.GetByIdAsync(categoryId);
 
         if (category == null)
         {
@@ -50,11 +50,11 @@ public class CategoryController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { Id = categoryModel.Id }, categoryModel.ToCategoryDto());
     }
     
-    [HttpPut("{Id:int}")]
-    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto,[FromRoute] int Id) // Updating Category 
+    [HttpPut("{categoryId:int}")]
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto,[FromRoute] int categoryId) // Updating Category 
     {
         
-        var category = await _categoryRepo.UpdateAsync(Id, updateCategoryDto.ToCategoryFromUpdate());
+        var category = await _categoryRepo.UpdateAsync(categoryId, updateCategoryDto.ToCategoryFromUpdate());
 
         if (category == null)
         {
@@ -64,10 +64,10 @@ public class CategoryController : ControllerBase
         return Ok(category.ToCategoryDto());
     }
     
-    [HttpDelete("{Id:int}")]
-    public async Task<IActionResult> Delete([FromRoute] int Id) // deleting Category
+    [HttpDelete("{categoryId:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int categoryId) // deleting Category
     {
-        var categories = await _categoryRepo.DeleteAsync(Id);
+        var categories = await _categoryRepo.DeleteAsync(categoryId);
 
         if (categories == null)
         {
