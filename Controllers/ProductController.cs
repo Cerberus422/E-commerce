@@ -50,7 +50,7 @@ public class ProductController : ControllerBase
     }
     
     [HttpPost("{categoryId:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromRoute] int categoryId,[FromBody] CreateProductDto productDto) // Creating Product 
     {
         if (!await _categoryRepo.CategoryExists(categoryId))
@@ -72,7 +72,7 @@ public class ProductController : ControllerBase
     }
     
     [HttpPut("{productId:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] UpdateProductDto updateProductDto, [FromRoute] int productId) // Updating Product 
     {
         if (!await _categoryRepo.CategoryExists(updateProductDto.CategoryId))
@@ -92,7 +92,7 @@ public class ProductController : ControllerBase
     }
     
     [HttpDelete("{productId:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete([FromRoute] int productId) // deleting Product
     {
         var product = await _productRepo.DeleteAsync(productId);
@@ -106,7 +106,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPatch("{productId:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Patch([FromRoute] int productId, [FromBody] PatchProductDto patchDto) // patching Product
     {
         if (patchDto.CategoryId.HasValue)

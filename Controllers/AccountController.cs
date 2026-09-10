@@ -4,8 +4,6 @@ using api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client.NativeInterop;
-
 namespace api.Controllers;
 
 [Route("api/account")]
@@ -23,7 +21,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto loginDto)
+    public async Task<IActionResult> Login(LoginDto loginDto) // login 
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username.ToLower());
 
@@ -40,13 +38,13 @@ public class AccountController : ControllerBase
             {
                 UserName = user.UserName,
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateToken(user)
             }
         );
     }
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) // registration
     {
         try
         {
@@ -69,7 +67,7 @@ public class AccountController : ControllerBase
                         {
                             UserName = appUser.UserName,
                             Email = appUser.Email,
-                            Token = _tokenService.CreateToken(appUser)
+                            Token = await _tokenService.CreateToken(appUser)
                         }
                     );
                 }

@@ -42,18 +42,18 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto) // Creating Category 
     {
         var categoryModel = categoryDto.ToCategoryFromCreate();
     
         await _categoryRepo.CreateAsync(categoryModel);
 
-        return CreatedAtAction(nameof(GetById), new { Id = categoryModel.Id }, categoryModel.ToCategoryDto());
+        return CreatedAtAction(nameof(GetById), new { categoryId = categoryModel.Id }, categoryModel.ToCategoryDto());
     }
     
     [HttpPut("{categoryId:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] UpdateCategoryDto updateCategoryDto,[FromRoute] int categoryId) // Updating Category 
     {
         
@@ -68,7 +68,7 @@ public class CategoryController : ControllerBase
     }
     
     [HttpDelete("{categoryId:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete([FromRoute] int categoryId) // deleting Category
     {
         var categories = await _categoryRepo.DeleteAsync(categoryId);

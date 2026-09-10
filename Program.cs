@@ -91,6 +91,13 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    await DataSeeder.SeedAdminAsync(
+        scope.ServiceProvider,
+        builder.Configuration);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

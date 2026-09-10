@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using api.Interfaces;
 using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
@@ -12,19 +13,34 @@ public class TokenService : ITokenService
 {
     private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _key;
+    private readonly UserManager<AppUser> _userManager;
     
-    public TokenService(IConfiguration config)
+    public TokenService(
+        IConfiguration config,
+        UserManager<AppUser> userManager)
     {
         _config = config;
-        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
+        _userManager = userManager;
+
+        _key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]!)
+        );
     }
-    public string CreateToken(AppUser user)
+    
+    public async Task<string> CreateToken(AppUser user)
     {
+        var roles = await _userManager.GetRolesAsync(user);
+
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
+            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!)
         };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
