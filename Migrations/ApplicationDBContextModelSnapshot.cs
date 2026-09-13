@@ -236,6 +236,52 @@ namespace api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("api.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId")
+                        .IsUnique();
+
+                    b.ToTable("Cart");
+                });
+
+            modelBuilder.Entity("api.Models.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartItem");
+                });
+
             modelBuilder.Entity("api.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -336,6 +382,36 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Models.Cart", b =>
+                {
+                    b.HasOne("api.Models.AppUser", "AppUser")
+                        .WithOne("Cart")
+                        .HasForeignKey("api.Models.Cart", "AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("api.Models.CartItem", b =>
+                {
+                    b.HasOne("api.Models.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.HasOne("api.Models.Category", "Category")
@@ -345,6 +421,17 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("api.Models.AppUser", b =>
+                {
+                    b.Navigation("Cart")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("api.Models.Category", b =>
