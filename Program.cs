@@ -86,6 +86,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 
 
