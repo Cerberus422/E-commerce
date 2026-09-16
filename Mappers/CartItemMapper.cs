@@ -19,4 +19,14 @@ public static class CartItemMapper
             TotalPrice = cartItemModel.Product.Price * cartItemModel.Quantity
         };
     }
+    
+    public static CartItem ToCartItemFromCreate(this CreateCartItemDto cartModel,int cartId)
+    {
+        return new CartItem()
+        {
+           ProductId = cartModel.ProductId,
+           Quantity = cartModel.Quantity,
+           CartId = cartId
+        };
+    }
 }

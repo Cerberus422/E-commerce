@@ -40,9 +40,7 @@ public class ProductController : ControllerBase
         var product =  await _productRepo.GetByIdAsync(productId);
 
         if (product == null)
-        {
-            return NotFound();
-        }
+            return NotFound("Product Not Found");
         
         var productModel = product.ToProductDto();
 

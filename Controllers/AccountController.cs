@@ -38,7 +38,7 @@ public class AccountController : ControllerBase
             {
                 UserName = user.UserName,
                 Email = user.Email,
-                Token = await _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateTokenAsync(user)
             }
         );
     }
@@ -67,7 +67,7 @@ public class AccountController : ControllerBase
                         {
                             UserName = appUser.UserName,
                             Email = appUser.Email,
-                            Token = await _tokenService.CreateToken(appUser)
+                            Token = await _tokenService.CreateTokenAsync(appUser)
                         }
                     );
                 }

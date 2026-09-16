@@ -27,7 +27,7 @@ public class TokenService : ITokenService
         );
     }
     
-    public async Task<string> CreateToken(AppUser user)
+    public async Task<string> CreateTokenAsync(AppUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
 
