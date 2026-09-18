@@ -22,7 +22,7 @@ public static class CartItemMapper
     
     public static CartItem ToCartItemFromCreate(this CreateCartItemDto cartModel,int cartId)
     {
-        return new CartItem()
+        return new CartItem
         {
            ProductId = cartModel.ProductId,
            Quantity = cartModel.Quantity,
