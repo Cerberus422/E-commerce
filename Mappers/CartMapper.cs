@@ -10,8 +10,7 @@ public static class CartMapper
     {
         return new CartDto()
         {
-            Id = cartModel.Id,
-            CartItems = cartModel.CartItems
+          CartItems = cartModel.CartItems
                 .Select(items => items.ToCartItemDto())
                 .ToList()
         };

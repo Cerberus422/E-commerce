@@ -72,7 +72,7 @@ public class CartController : ControllerBase
 
     [HttpPut("{cartItemId:int}")]
     [Authorize]
-    public async Task<IActionResult> UpdateCart([FromRoute] int cartItemId, [FromBody] UpdateCartItemDto updateCartItemDto)
+    public async Task<IActionResult> UpdateCart([FromRoute] int cartItemId, [FromBody] UpdateCartItemDto updateCartItemDto) // Change quantity of Cart Item
     {
         var cart = await _cartRepo.GetCartByUserIdAsync(User.GetUserId());
         
@@ -96,4 +96,31 @@ public class CartController : ControllerBase
         return Ok(cart.ToCartDto());
     }
 
+    [HttpDelete("{cartItemId:int}")]
+    [Authorize]
+    public async Task<IActionResult> RemoveCartItem([FromRoute] int cartItemId) // Remove one CartItem
+    {
+        var cart = await _cartRepo.GetCartByUserIdAsync(User.GetUserId());
+        
+        var cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == cartItemId);
+        
+        if (cartItem == null)
+            return NotFound("Cart Item does not exist");
+        
+        await _cartRepo.DeleteAsync(cartItemId);
+        
+        return NoContent();
+    }
+    
+    
+    [HttpDelete]
+    [Authorize]
+    public async Task<IActionResult> ClearCart() // Clear Cart
+    {
+        var cart = await _cartRepo.GetCartByUserIdAsync(User.GetUserId());
+        
+        await _cartRepo.ClearAsync(cart.Id);
+        
+        return NoContent();
+    }
 }
