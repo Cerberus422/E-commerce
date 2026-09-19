@@ -299,6 +299,44 @@ namespace api.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("api.Models.Comment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -408,6 +446,25 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("api.Models.Comment", b =>
+                {
+                    b.HasOne("api.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
 
                     b.Navigation("Product");
                 });
