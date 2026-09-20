@@ -19,4 +19,15 @@ public static class CommentMapper
             Username = commentModel.AppUser.UserName
         };
     }
+
+    public static Comment ToCommentFromCreate(this CreateCommentDto commentDto, int productId)
+    {
+        return new Comment
+        {
+            Title = commentDto.Title,
+            Content = commentDto.Content,
+            Rating = commentDto.Rating,
+            ProductId = productId
+        };
+    }
 }

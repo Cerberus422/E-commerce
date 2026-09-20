@@ -73,7 +73,7 @@ public class CommentRepository : ICommentRepository
         return await comments.Skip(skipNumber).Take(query.PageSize).ToListAsync();
     }
 
-    public async Task<List<Comment>> GetCommentsByProductId(CommentQueryObject query, int productId)
+    public async Task<List<Comment>> GetCommentsByProductIdAsync(CommentQueryObject query, int productId)
     {
         var comments = _context.Comments
             .Include(c => c.Product)
@@ -133,5 +133,23 @@ public class CommentRepository : ICommentRepository
         var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
         return await comments.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+    }
+
+    public async Task<Comment?> GetByIdAsync(int commentId)
+    {
+        var comment = await _context.Comments
+            .Include(c => c.Product)
+            .Include(c => c.AppUser)
+            .FirstOrDefaultAsync(c => c.id == commentId);
+
+        return comment;
+    }
+
+    public async Task<Comment> CreateAsync(Comment commentModel)
+    {
+        await _context.Comments.AddAsync(commentModel);
+        await _context.SaveChangesAsync();
+        
+        return commentModel;
     }
 }

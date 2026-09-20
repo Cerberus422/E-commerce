@@ -142,4 +142,9 @@ public class ProductRepository : IProductRepository
             .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == productId);
     }
+
+    public Task<bool> ProductExists(int productId)
+    {
+        return  _context.Products.AnyAsync(p => p.Id == productId);
+    }
 }
