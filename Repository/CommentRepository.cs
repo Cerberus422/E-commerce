@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Dtos.Comment;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
@@ -145,11 +146,55 @@ public class CommentRepository : ICommentRepository
         return comment;
     }
 
+    public async Task<Comment?> GetByIdAndUserIdAsync(int commentId, string userId, bool isAdmin)
+    {
+        return await _context.Comments
+            .FirstOrDefaultAsync(c => c.id == commentId && (c.AppUserId == userId || isAdmin));
+    }
+
     public async Task<Comment> CreateAsync(Comment commentModel)
     {
         await _context.Comments.AddAsync(commentModel);
         await _context.SaveChangesAsync();
         
         return commentModel;
+    }
+
+    public async Task<Comment?> Delete(int commentId)
+    {
+        var existingComment = await _context.Comments.FindAsync(commentId);
+
+        if (existingComment == null)
+            return null;
+
+        _context.Comments.Remove(existingComment);
+        await _context.SaveChangesAsync();
+
+        return existingComment;
+    }
+
+    public async Task<Comment?> Patch(int commentId, PatchCommentDto patchDto)
+    {
+        var comment = await _context.Comments
+            .FirstOrDefaultAsync(c => c.id == commentId);
+
+        if (comment == null)
+            return null;
+
+        if (patchDto.Title != null)
+            comment.Title = patchDto.Title;
+
+        if (patchDto.Content != null)
+            comment.Content = patchDto.Content;
+
+        if (patchDto.Rating != null)
+            comment.Rating = patchDto.Rating.Value;
+
+        await _context.SaveChangesAsync();
+        
+        return await _context.Comments
+            .Include(c => c.Product)
+            .Include(c => c.AppUser)
+            .FirstOrDefaultAsync(c => c.id == commentId);
     }
 }

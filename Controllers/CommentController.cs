@@ -86,5 +86,32 @@ public class CommentController : ControllerBase
             new { commentId = createdComment!.id },
             createdComment.ToCommentDto());
     }
-    
+
+    [HttpDelete("{commentId:int}")] // Delete comment by CommentId
+    [Authorize]
+    public async Task<IActionResult> Delete([FromRoute] int commentId)
+    {
+        var comment = await _commentRepo.GetByIdAndUserIdAsync(commentId, User.GetUserId(), User.IsInRole("Admin"));
+
+        if (comment == null)
+            return NotFound("Comment does not exist");
+
+        await _commentRepo.Delete(commentId);
+
+        return NoContent();
+    }
+
+    [HttpPatch("{commentId:int}")] // Patch comment by CommentId
+    [Authorize]
+    public async Task<IActionResult> Patch([FromRoute] int commentId, PatchCommentDto patchDto)
+    {
+        var comment = await _commentRepo.GetByIdAndUserIdAsync(commentId, User.GetUserId(), false);
+        
+        if (comment == null)
+            return NotFound("Comment does not exist");
+
+        var patchedComment = await _commentRepo.Patch(commentId, patchDto);
+
+        return Ok(patchedComment.ToCommentDto());
+    }
 }
