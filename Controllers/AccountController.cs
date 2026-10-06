@@ -103,4 +103,18 @@ public class AccountController : ControllerBase
 
         return Ok(user.ToUserDto());
     }
+
+    [HttpPost("change_password")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto passwordDto)
+    {
+        var user = await _userManager.FindByIdAsync(User.GetUserId());
+        
+        var result = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
+        
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+        
+        return NoContent();
+    }
 }
