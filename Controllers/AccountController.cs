@@ -1,6 +1,9 @@
 ﻿using api.Dtos.Account;
+using api.Extensions;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -85,5 +88,19 @@ public class AccountController : ControllerBase
         {
             return StatusCode(500, e);
         }
+    }
+    
+    [HttpGet("me")]
+    [Authorize]
+    public async Task<IActionResult> GetMe() // get your info
+    {
+        var userId = User.GetUserId();
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return NotFound();
+
+        return Ok(user.ToUserDto());
     }
 }
