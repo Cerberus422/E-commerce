@@ -117,4 +117,24 @@ public class AccountController : ControllerBase
         
         return NoContent();
     }
+
+    [HttpDelete]
+    [Authorize]
+    public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountDto deleteAccountDto)
+    {
+        var userid = User.GetUserId();
+
+        var user = await _userManager.FindByIdAsync(userid);
+
+        var password = await _userManager.CheckPasswordAsync(user, deleteAccountDto.Password);
+
+        if (!password)
+        {
+            return BadRequest("Incorrect password");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+
+        return NoContent();
+    }
 }
