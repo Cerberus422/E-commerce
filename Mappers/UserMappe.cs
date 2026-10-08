@@ -13,4 +13,14 @@ public static class UserMappe
             Email = user.Email!
         };
     }
+    
+    public static AdminUserDto  ToAdminUserDto(this AppUser user)
+    {
+        return new AdminUserDto
+        {
+            Id = user.Id!,
+            UserName = user.UserName!,
+            Email = user.Email!
+        };
+    }
 }

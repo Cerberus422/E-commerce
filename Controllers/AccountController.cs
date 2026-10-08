@@ -104,9 +104,9 @@ public class AccountController : ControllerBase
         return Ok(user.ToUserDto());
     }
 
-    [HttpPost("change_password")]
+    [HttpPost("change_password")] 
     [Authorize]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto passwordDto)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto passwordDto) // change your password
     {
         var user = await _userManager.FindByIdAsync(User.GetUserId());
         
@@ -120,7 +120,7 @@ public class AccountController : ControllerBase
 
     [HttpDelete]
     [Authorize]
-    public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountDto deleteAccountDto)
+    public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountDto deleteAccountDto) // delete your account
     {
         var userid = User.GetUserId();
 
@@ -134,7 +134,12 @@ public class AccountController : ControllerBase
         }
 
         var result = await _userManager.DeleteAsync(user);
-
+        
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        
         return NoContent();
     }
 }

@@ -87,9 +87,9 @@ public class CommentController : ControllerBase
             createdComment.ToCommentDto());
     }
 
-    [HttpDelete("{commentId:int}")] // Delete comment by CommentId
+    [HttpDelete("{commentId:int}")] 
     [Authorize]
-    public async Task<IActionResult> Delete([FromRoute] int commentId)
+    public async Task<IActionResult> Delete([FromRoute] int commentId) // Delete comment by CommentId
     {
         var comment = await _commentRepo.GetByIdAndUserIdAsync(commentId, User.GetUserId(), User.IsInRole("Admin"));
 
@@ -101,9 +101,9 @@ public class CommentController : ControllerBase
         return NoContent();
     }
 
-    [HttpPatch("{commentId:int}")] // Patch comment by CommentId
+    [HttpPatch("{commentId:int}")] 
     [Authorize]
-    public async Task<IActionResult> Patch([FromRoute] int commentId, PatchCommentDto patchDto)
+    public async Task<IActionResult> Patch([FromRoute] int commentId, PatchCommentDto patchDto) // Patch comment by CommentId
     {
         var comment = await _commentRepo.GetByIdAndUserIdAsync(commentId, User.GetUserId(), false);
         
